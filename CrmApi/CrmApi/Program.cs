@@ -33,9 +33,14 @@ app.MapPost("/customers", async (Customer customer, CosmosDbService cosmosDbServ
     return Results.Created($"/customers/{createdCustomer.id}", createdCustomer);
 });
 
-app.MapGet("/customers", async (CosmosDbService cosmosDbService) =>
+app.MapGet("/customers", async (CosmosDbService service) =>
 {
-    List<Customer> customers = await cosmosDbService.GetAllCustomersAsync();
+    var customers = await service.GetAllCustomersAsync();
+
+    if (customers.Count == 0)
+    {
+        return Results.Ok("No Customers registered.");
+    }
 
     return Results.Ok(customers);
 });
